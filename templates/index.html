@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Attendance System — Dashboard</title>
+  <meta name="description" content="AI-powered smart attendance system with face recognition and gaze tracking.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle"
+      style="left:10%;width:4px;height:4px;background:#6366f1;animation-duration:18s;animation-delay:0s;"></div>
+    <div class="particle"
+      style="left:25%;width:3px;height:3px;background:#8b5cf6;animation-duration:22s;animation-delay:3s;"></div>
+    <div class="particle"
+      style="left:45%;width:5px;height:5px;background:#06b6d4;animation-duration:15s;animation-delay:6s;"></div>
+    <div class="particle"
+      style="left:65%;width:3px;height:3px;background:#6366f1;animation-duration:20s;animation-delay:2s;"></div>
+    <div class="particle"
+      style="left:80%;width:4px;height:4px;background:#8b5cf6;animation-duration:25s;animation-delay:9s;"></div>
+    <div class="particle"
+      style="left:90%;width:3px;height:3px;background:#10b981;animation-duration:19s;animation-delay:5s;"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="/">
+      <div class="navbar-logo">🎓</div>
+      <span class="navbar-title">Smart <span>Attendance</span></span>
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">🏠 Dashboard</a></li>
+      <li><a href="/attendance">📊 Records</a></li>
+    </ul>
+    <div class="navbar-badge" style="display:flex;align-items:center;gap:6px;">
+      <div class="pulse-dot"></div> Live
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="page-wrapper">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flash-list fade-up">
+      {% for msg in messages %}
+      <li class="flash-item">⚡ {{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Hero -->
+    <section class="hero fade-up">
+      <div class="hero-eyebrow">✨ AI-Powered System</div>
+      <h1>Smart Attendance<br>Recognition System</h1>
+      <p>Automated, real-time face recognition with gaze tracking to make attendance seamless and accurate for every
+        session.</p>
+    </section>
+
+    <!-- Stats bar -->
+    <div class="stats-bar fade-up-delay-1">
+      <div class="stat-card">
+        <span class="stat-icon">🤖</span>
+        <div class="stat-value">{{ total_students if total_students is defined else '—' }}</div>
+        <div class="stat-label">Students Enrolled</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📋</span>
+        <div class="stat-value">{{ total_records if total_records is defined else '—' }}</div>
+        <div class="stat-label">Total Records</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📷</span>
+        <div class="stat-value">HOG</div>
+        <div class="stat-label">Recognition Model</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">👁️</span>
+        <div class="stat-value">MediaPipe</div>
+        <div class="stat-label">Gaze Tracker</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="section-title fade-up-delay-2">⚡ Quick Actions</div>
+
+    <div class="action-grid fade-up-delay-2">
+
+      {# Capture Dataset – disabled; uncomment to re-enable
+      <a class="action-card" href="/capture" id="btn-capture">
+        <div class="action-card-inner">
+          <div class="action-icon purple">➕</div>
+          <div class="action-title">Capture Dataset</div>
+          <div class="action-desc">Register a new person by capturing their face images for training.</div>
+          <div class="action-arrow">↗</div>
+        </div>
+      </a>
+      #}
+
+      <!-- Train Model -->
+      <form action="/train" method="post" style="display:contents;" id="form-train">
+        <button type="submit" class="action-card" style="text-align:left;font-family:inherit;" id="btn-train">
+          <div class="action-card-inner">
+            <div class="action-icon violet">🧠</div>
+            <div class="action-title">Train Model</div>
+            <div class="action-desc">Re-train the face recognition model on the latest captured dataset.</div>
+            <div class="action-arrow">↗</div>
+          </div>
+        </button>
+      </form>
+
+      <!-- Recognize Attendance -->
+      <a class="action-card" href="/recognize" id="btn-recognize">
+        <div class="action-card-inner">
+          <div class="action-icon cyan">📷</div>
+          <div class="action-title">Recognize Attendance</div>
+          <div class="action-desc">Run face recognition once to capture who is currently present.</div>
+          <div class="action-arrow">↗</div>
+        </div>
+      </a>
+
+      <!-- Full Session -->
+      <a class="action-card" href="/session" id="btn-session">
+        <div class="action-card-inner">
+          <div class="action-icon green">🚀</div>
+          <div class="action-title">Run Full Session</div>
+          <div class="action-desc">Start a timed session with face recognition, gaze tracking &amp; SMS alerts.</div>
+          <div class="action-arrow">↗</div>
+        </div>
+      </a>
+
+      <!-- View Attendance -->
+      <a class="action-card" href="/attendance" id="btn-attendance" style="grid-column: span 1;">
+        <div class="action-card-inner">
+          <div class="action-icon amber">📊</div>
+          <div class="action-title">View Attendance</div>
+          <div class="action-desc">Browse and review all attendance records with attention scores.</div>
+          <div class="action-arrow">↗</div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Footer note -->
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:40px;">
+      Smart Attendance System &bull; Face Recognition + Gaze Tracking &bull; Powered by dlib &amp; MediaPipe
+    </p>
+
+  </main>
+
+  <script>
+    // Add subtle ripple to action cards
+    document.querySelectorAll('.action-card').forEach(card => {
+      card.addEventListener('click', function (e) {
+        this.style.opacity = '0.85';
+        setTimeout(() => this.style.opacity = '', 200);
+      });
+    });
+  </script>
+</body>
+
+</html>

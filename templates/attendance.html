@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Records — Smart Attendance</title>
+  <meta name="description" content="View all attendance records with attention scores and status.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+  <div class="particles" aria-hidden="true">
+    <div class="particle"
+      style="left:15%;width:3px;height:3px;background:#6366f1;animation-duration:20s;animation-delay:1s;"></div>
+    <div class="particle"
+      style="left:55%;width:4px;height:4px;background:#10b981;animation-duration:17s;animation-delay:4s;"></div>
+    <div class="particle"
+      style="left:80%;width:3px;height:3px;background:#8b5cf6;animation-duration:23s;animation-delay:7s;"></div>
+  </div>
+
+  <nav class="navbar">
+    <a class="navbar-brand" href="/">
+      <div class="navbar-logo">🎓</div>
+      <span class="navbar-title">Smart <span>Attendance</span></span>
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">🏠 Dashboard</a></li>
+      <li><a href="/attendance">📊 Records</a></li>
+    </ul>
+    <div class="navbar-badge" style="display:flex;align-items:center;gap:6px;">
+      <div class="pulse-dot"></div> Live
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flash-list fade-up">
+      {% for msg in messages %}
+      <li class="flash-item">⚡ {{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <a class="back-link fade-up" href="/">← Back to Dashboard</a>
+
+    <div class="table-wrapper fade-up-delay-1">
+      <div class="table-header">
+        <div>
+          <h2>📊 Attendance Records</h2>
+          <div class="table-meta" style="margin-top:4px;">All recorded sessions</div>
+        </div>
+        <a href="/" class="btn btn-ghost" style="width:auto;padding:10px 20px;font-size:0.85rem;">🏠 Home</a>
+      </div>
+
+      {% if records and records|length > 0 %}
+      <div style="overflow-x:auto;">
+        <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Timestamp</th>
+              <th>Name</th>
+              <th>Attention</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in records %}
+            {% if row|length >= 3 %}
+            <tr>
+              <td style="color:var(--text-muted);font-size:0.75rem;">{{ loop.index }}</td>
+              <td style="font-family:monospace;font-size:0.8rem;color:var(--text-muted);">
+                {{ row[0] if row|length > 0 else '—' }}
+              </td>
+              <td>
+                <div class="name-cell">
+                  <div class="name-avatar">
+                    {{ (row[1][:2] | upper) if row|length > 1 and row[1] else '?' }}
+                  </div>
+                  <span style="font-weight:600;color:var(--text-primary);text-transform:capitalize;">
+                    {{ row[1] | lower | title if row|length > 1 else '—' }}
+                  </span>
+                </div>
+              </td>
+              <td>
+                {% if row|length > 2 and row[2] %}
+                {% set score = row[2] | float %}
+                <div class="attention-bar">
+                  <div class="attention-track">
+                    <div
+                      class="attention-fill {% if score >= 0.65 %}attention-high{% elif score >= 0.35 %}attention-medium{% else %}attention-low{% endif %}"
+                      style="width:{{ (score * 100) | int }}%"></div>
+                  </div>
+                  <span style="font-size:0.8rem;color:var(--text-secondary);">{{ "%.0f"|format(score * 100) }}%</span>
+                </div>
+                {% else %}
+                <span style="color:var(--text-muted);">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if row|length > 3 %}
+                {% if row[3] == 'PRESENT' %}
+                <span class="badge badge-present">✓ Present</span>
+                {% else %}
+                <span class="badge badge-absent">✗ Absent</span>
+                {% endif %}
+                {% else %}
+                <span class="badge badge-present">✓ Present</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="padding:16px 28px;border-top:1px solid var(--border);">
+        <span style="font-size:0.8rem;color:var(--text-muted);">
+          Showing {{ records | length }} records
+        </span>
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <h3>No records yet</h3>
+        <p>Run a session or recognize attendance to populate records here.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Dataset — Smart Attendance</title>
+    <meta name="description" content="Register a new person by capturing their face dataset for recognition.">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="particles" aria-hidden="true">
+        <div class="particle"
+            style="left:20%;width:4px;height:4px;background:#6366f1;animation-duration:21s;animation-delay:0s;"></div>
+        <div class="particle"
+            style="left:70%;width:3px;height:3px;background:#8b5cf6;animation-duration:18s;animation-delay:5s;"></div>
+    </div>
+
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">
+            <div class="navbar-logo">🎓</div>
+            <span class="navbar-title">Smart <span>Attendance</span></span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="/">🏠 Dashboard</a></li>
+            <li><a href="/attendance">📊 Records</a></li>
+        </ul>
+        <div class="navbar-badge" style="display:flex;align-items:center;gap:6px;">
+            <div class="pulse-dot"></div> Live
+        </div>
+    </nav>
+
+    <main class="page-wrapper"
+        style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 73px);">
+
+        <a class="back-link fade-up" href="/">← Back to Dashboard</a>
+
+        <div class="form-card fade-up-delay-1">
+            <div style="font-size:2.5rem;margin-bottom:16px;">➕</div>
+            <h2>Capture Dataset</h2>
+            <p>Enter the person's full name below. A camera window will open automatically to capture face images for
+                training.</p>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class="flash-list" style="margin-bottom:20px;">
+                {% for msg in messages %}
+                <li class="flash-item">⚡ {{ msg }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <form method="post" id="capture-form">
+                <div class="form-group">
+                    <label for="name">Person's Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. Abhishek Kumar" required
+                        autocomplete="name" autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <span id="btn-text">📸 Start Capture</span>
+                </button>
+            </form>
+
+            <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+                <p style="font-size:0.78rem;color:var(--text-muted);text-align:center;line-height:1.6;">
+                    💡 After clicking Start Capture, a camera window will appear.<br>
+                    Look at the camera as it captures ~50 sample images.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const form = document.getElementById('capture-form');
+        const btn = document.getElementById('submit-btn');
+        const txt = document.getElementById('btn-text');
+        form.addEventListener('submit', () => {
+            txt.textContent = '⏳ Starting…';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+
+</html>
